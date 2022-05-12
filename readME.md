@@ -24,7 +24,7 @@ You will choose from a list of approved third party API's. Your application must
 - Should pass all tests in its test suite(s)
 - Should contain a README with instructions to new users on how to set up and run the application
 
-### **Repo Directions:**
+### **Repository Directions:**
 1)  Ensure you're connected to the internet; the project requires an internet connection for API fetch requests and HTML/CSS image links.
 
 2)  Run 
@@ -33,10 +33,25 @@ You will choose from a list of approved third party API's. Your application must
     
     to install any required dependencies for this repository.
 
-### Project Breakdown:
+#### Teamwork Makes the Dream Work; Or, How We Took This Project to Church
+### Project Planning:
+The team coordinated through the use of wireframes on Figma.  This enabled the group to conceive and work up diagrams for what the final project should look like from a pure aesthetic perspective.  Being able to refer back to the wireframes was key to getting the website formatting correct.  
+
+Next, the team created a Trello group to coordinate their efforts on the project.  The project pieces were split into several categories:
+    
+    - HTML/CSS
+    - JavaScript
+    - Integration
+    - Testing
+
+As the team brainstormed what completing the project would require, Trello task cards were created listing the task that needed to be done, what category the task fell under, to whom the primary responsibility was given for completion, and then filed under "BACKLOG".  
+
+As the project moved forwards, the team would divvy up objectives between themselves during the morning "stand up", with the larger objectives being collaborative efforts (writing the API fetches, integrating disparate pieces of the project, etc.) in line with the program emphasis on "pair programming".  
+
+### Project Implementation:
 **HTML/CSS:**
 Basic website formatting achieved through Hypertext Markup Language (HTML) and Cascading Style Sheets (CSS).  HTML was written to form the "bones" of the site, with CSS being added to flesh it out to be more functional and aesthetically pleasing.  
 
 **JavaScript:**
-For Claire/Calvin to fill in, or Kevin once he looks through the code more.achieved
+For Claire/Calvin to fill in, or Kevin once he looks through the code more.
 
