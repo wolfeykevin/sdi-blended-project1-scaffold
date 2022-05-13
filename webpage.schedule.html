@@ -1,6 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<script>
+    function loadData() {
+        getShows().then(shows => {
+        const template = getTemplate(shows);
+        document.querySelector("div#content").innerHTML = template;
+    
+        });
+    }
+    
+    async function getShows() {
+        const response = await fetch("https://api.tvmaze.com/schedule?country=US");
+        return await response.json();
+    }
+
+    function organizeSchedule(posts){
+        //input: array of objects. if same time then add the tv show names to a nested array 
+        //return array of objects. the key for each is time. val is an array of tv show names
+        let returnarray = [];
+        let pasttime = 0;
+        let currentobj = {};
+        for (obj of posts){
+
+            let airtimetemp = obj.airtime
+            let name = obj.show.name
+
+            if (airtimetemp !== pasttime){ //new time has been encountered
+                if (pasttime != 0 ){
+                    returnarray.push(currentobj)
+                }
+                currentobj = {airtime : airtimetemp, shows: [name]}
+                pasttime = airtimetemp
+            }
+            else{
+                let test = currentobj['shows']
+                currentobj['shows'].push(name)
+            }
+        }
+        return returnarray
+    }
+    
+    function getTemplate(posts) {
+        //function here to organize based on time
+        let newposts = organizeSchedule(posts) 
+        const rows = newposts.map(toRowView).join("");
+        //would add function here to change the rows
+        //change the headers of the html here
+        return `<table>
+        <thead>
+            <tr>
+            <th style='color:white; font-size:25px; font-family:Verdana;'>Show Name:</th> 
+            <th style='color:white; font-size:25px; font-family:Verdana;'>Show Time:</th>
+            </tr>
+        </thead>
+    
+        <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+    }
+
+    async function tdclick(shows){ 
+        //turn the 'shows' string into an array of strings
+        //use promise.all to query the database for each show
+        //do something to make the child elements look nice
+
+        let arrayShows = shows.split(",")
+        let showDatabaseURLs = []
+        for (show of arrayShows){
+            showDatabaseURLs.push ("https://api.tvmaze.com/singlesearch/shows?q="  + show)
+        }
+
+        removeAllChildNodes(document.querySelector('#tvcontent'))
+        
+        //use promise.all here
+        await Promise.all(showDatabaseURLs.map(x => {                        
+            return fetch(x)                          
+                .then(response => {return response.json()})       
+                .then(data =>  { 
+                    const element = document.createElement("div");
+                    const division1 = document.createElement("div");
+                    const division2 = document.createElement("div");
+                    const images = document.createElement("img");
+                    images.src = data.image.medium;
+                    images.style.border = "5px solid black"
+                    images.style.borderRadius = "10px";
+                    const title = document.createElement('div');//title
+                    title.innerHTML = `<b>${data.name}</b>`
+                    title.style.color = 'white'
+                    title.style.fontSize = '23px'
+                    title.style.fontFamily = 'Verdana'
+                    //old
+                    const description = document.createElement('div');
+                    description.innerHTML = data.summary
+                    description.style.color = "white"
+                    description.style.fontFamily = 'Verdana'
+                    description.style.textAlign = "left"
+                    description.style.backgroundColor = 'dimgray'
+                    description.style.boxShadow = "3px 3px 3px black"
+                    description.style.borderRadius = "7px"
+                    description.style.borderBlockColor = 'dimgray'
+                    description.style.borderSpacing = "5px"
+
+                    
+                    // use collapsable stuff here 
+                    
+                    // const summary = document.createElement("button");
+                    // summary.classList.add('collapsible')
+                    // summary.textContent = "Description"
+
+                    // const summaryData = document.createElement("div");
+                    // summaryData.classList.add('collapsiblecontent')
+                    // summaryData.innerHTML = data.summary
+
+                    // summary.appendChild(summaryData)
+                    
+                    
+                    
+                    element.appendChild(title);
+                    element.appendChild(division1);
+                    element.appendChild(images);
+                    element.appendChild(division2);
+                    element.appendChild(description);
+                    document.getElementById("tvcontent").appendChild(element);
+                    
+
+                })  
+        }))
+    };  
+
+    function makeCollapsible(){
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+        
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            })
+        }
+    }
+
+
+    function toRowView(x) {
+        //make everything nice looking here 
+        let rowstr = x.shows.join(", ")
+        return `<t>
+        <td id="row1" style='color:white; padding-bottom: 1em; font-family:Verdana;' align="left";
+        onclick='tdclick(this.innerText)';>${rowstr}</td>
+        <td style='color:white; font-family:Verdana;'><b>${x.airtime}</b></td>
+        </tr>`;
+    }
+    loadData();  
+
+    
+
+
+</script>
+
+<style>
+    .row {
+    color: white;
+    float: left;
+    background-color: gray;
+    width: 300px;
+    border: 15px solid green;
+    }
+</style>
+
+
+<style>       
+    .collapsible {
+    background-color: #85818175;
+    color: black;
+    cursor: pointer;
+    padding: 18px;
+    width: 55%;
+    border: 1px;
+    text-align: left;
+    outline: none;
+    font-size: 20px;
+    float: right;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(255, 255, 255, 0.22) 0px 15px 12px;                
+
+    }
+    
+    .active, .collapsible:hover {
+    background-color: rgb(110, 110, 110);
+    color: white;
+    font-weight: bold;
+    }
+    
+    .collapsiblecontent {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+    width: 53.1%;
+    float: right;
+    font-family: Arial, Helvetica, sans-serif;
+    }
+</style>
+
+
 <head>
     <title>SDI Project 1: TV Shows & Synopses</title>
     <style>
@@ -11,8 +223,8 @@
     </head>
 </head>
 
-<div1>
-    <body> 
+<div1 >
+    <body style="position:relative;"> 
         <h1 style="font-family:verdana;">Schedule:
             <style>
                 div1 {text-align: center;}
@@ -23,125 +235,63 @@
                 h1 {font-weight: bold;}
             </style>
         </h1>
+
+        <div id="content" style="float: left; width: 50%"></div>
+
+        <div id="tvcontent" style="float: right; color:white; font-size:25px; font-family:verdana; width: 50%";>Welcome to YOUR entertainment schedule!
+            <div>
+                <img src="https://i.imgur.com/7Kspzb6.png" alt="Tv time" width="700px" height="600px">
+            </div>
+        </div>
+
     </body>
 </div1>
 
-<div2>
-    <body>
-        <div id="menurectangle">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            .rectangle {
-              position: fixed;
-              bottom: 0;
-              height: 100px;
-              width: 100%;
-              background-color: rgba(255, 255, 255, 0.507);
-            }
-            </style>
-            <div class="rectangle"></div>  
-        </style>
-</div2>  
+<footer>
+    <style>
+    body {margin:0;}
+    
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: rgb(51, 51, 51);
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+    }
+    
+    li {
+      float: left;
+    }
+    
+    li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 0px 13px;
+      text-decoration: none;
+    }
+    
+    li a:hover:not(.active) {
+      background-color: rgb(17, 17, 17);
+    }
+    
+    .active {
+      background-color: #04AA6D;
+    }
+    </style>
+    
+    <ul>
+        <li><a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.main.html">
+            <img src="https://i.imgur.com/9OUrGoe.png" alt="Home" width="75" height="75"></li>
+        <li><a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.search.html">
+            <img src="https://i.imgur.com/Ut0bHnY.png" alt="Search" width="75" height="75"></li>
+        <li><a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.schedule.html">
+            <img src="https://i.imgur.com/LUIqspQ.png" alt="Schedules & Times" width="75" height="75"></li>
+    </ul>
+    </div>
+    </footer>
 
-<div id="home">
-    <button class="button home">
-        <a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.main.html">
-            <img src="https://i.imgur.com/9OUrGoe.png" alt="Home" width="75" height="75">
-        </a>
-    </button>
-        <style>
-            .home {
-                background-color: #85818175; /* Purple */
-                border: 1px;
-                color: rgb(255, 255, 255, 0.507);
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 1px 1px;
-                cursor: pointer;
-                padding: 1px 1px;
-                font-weight: bold;
-                color:azure
-                }         
-                #home {
-                position: fixed;
-                bottom: 10px;
-                left: 50px;
-                box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(255, 255, 255, 0.22) 0px 15px 12px;                
-                }      
-            .home:hover{
-            background: #0000001f;
-            text-shadow: 1px 1px 2px rgb(255, 255, 255), 0 0 25px rgb(255, 255, 255), 0 0 5px rgb(255, 255, 255);
-            }
-        </style>
-</div>             
 
-<div id="search">
-    <button class="button search">
-        <a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.search.html">
-            <img src="https://i.imgur.com/Ut0bHnY.png" alt="Search" width="75" height="75">
-        </a>
-    </button>
-        <style>
-            .search {
-                background-color: #85818175; /* Purple */
-                border: 1px;
-                color: rgb(255, 255, 255, 0.507);
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 1px 1px;
-                cursor: pointer;
-                padding: 1px 1px;
-                font-weight: bold;
-                color:azure
-                }         
-                #search {
-                position: fixed;
-                bottom: 10px;
-                left: 750px;
-                box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(255, 255, 255, 0.22) 0px 15px 12px;                
-                }      
-            .search:hover{
-            background: #0000001f;
-            text-shadow: 1px 1px 2px rgb(255, 255, 255), 0 0 25px rgb(255, 255, 255), 0 0 5px rgb(255, 255, 255);
-            }
-        </style>
-</div>             
-
-<div id="calendar">
-    <button class="button calendar">
-        <a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.schedule.html">
-            <img src="https://i.imgur.com/LUIqspQ.png" alt="Schedules & Times" width="75" height="75">
-        </a>
-    </button>
-        <style>
-            .calendar {
-                background-color: #85818175; /* Purple */
-                border: 1px;
-                color: rgb(255, 255, 255, 0.507);
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 1px 1px;
-                cursor: pointer;
-                padding: 1px 1px;
-                font-weight: bold;
-                color:azure
-                }         
-                #calendar {
-                position: fixed;
-                bottom: 10px;
-                right: 750px;
-                box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(255, 255, 255, 0.22) 0px 15px 12px;                
-                }      
-            .calendar:hover{
-            background: #0000001f;
-            text-shadow: 1px 1px 2px rgb(255, 255, 255), 0 0 25px rgb(255, 255, 255), 0 0 5px rgb(255, 255, 255);
-            }
-            .calendar:
-        </style>
-</div>             

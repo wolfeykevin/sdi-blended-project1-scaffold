@@ -26,99 +26,91 @@
     </body>
 </div1>
 
-<div2>
-    <body>
-        <div id="menurectangle">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            .rectangle {
-              position: fixed;
-              bottom: 0;
-              height: 100px;
-              width: 100%;
-              background-color: rgba(255, 255, 255, 0.507);
-            }
-            </style>
-            <div class="rectangle"></div>  
-        </style>
-</div2>   
-
 <div3>
     <img src="https://i.imgur.com/7Kspzb6.png" alt="Welcome to the worlds premier TV show search engine" width="1250" height="1050" class="center">
         <style> 
             .center {
-                position: fixed;
-                left: 325px;
-                bottom: 15px;    
+            position: fixed;
+            left: 325px;
+            bottom: 15px;  
+                
+            animation: fadeIn 5s;
+            -webkit-animation: fadeIn 5s;
+            -moz-animation: fadeIn 5s;
+            -o-animation: fadeIn 5s;
+            -ms-animation: fadeIn 5s;
             }
+            @keyframes fadeIn {
+            0% {opacity:0;}
+            100% {opacity:1;}
+            }
+
+            @-moz-keyframes fadeIn {
+            0% {opacity:0;}
+            100% {opacity:1;}
+            }
+
+            @-webkit-keyframes fadeIn {
+            0% {opacity:0;}
+            100% {opacity:1;}
+            }
+
+            @-o-keyframes fadeIn {
+            0% {opacity:0;}
+            100% {opacity:1;}
+            }
+
+            @-ms-keyframes fadeIn {
+            0% {opacity:0;}
+            100% {opacity:1;}
+            }
+          
         </style>
 </div3>
 
-<div id="search">
-    <button class="button search">
-        <a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.search.html">
-            <img src="https://i.imgur.com/Ut0bHnY.png" alt="Search" width="75" height="75">
-        </a>
-    </button>
-        <style>
-            .search {
-                background-color: #85818175; /* Purple */
-                border: 1px;
-                color: rgb(255, 255, 255, 0.507);
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 1px 1px;
-                cursor: pointer;
-                padding: 1px 1px;
-                font-weight: bold;
-                color:azure
-                }         
-                #search {
-                position: fixed;
-                bottom: 10px;
-                left: 750px;
-                box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(255, 255, 255, 0.22) 0px 15px 12px;                
-                }      
-            .search:hover{
-            background: #0000001f;
-            text-shadow: 1px 1px 2px rgb(255, 255, 255), 0 0 25px rgb(255, 255, 255), 0 0 5px rgb(255, 255, 255);
-            }
-        </style>
-</div>             
-
-<div id="calendar">
-    <button class="button calendar">
-        <a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.schedule.html">
-            <img src="https://i.imgur.com/LUIqspQ.png" alt="Schedules & Times" width="75" height="75">
-        </a>
-    </button>
-        <style>
-            .calendar {
-                background-color: #85818175; /* Purple */
-                border: 1px;
-                color: rgb(255, 255, 255, 0.507);
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 1px 1px;
-                cursor: pointer;
-                padding: 1px 1px;
-                font-weight: bold;
-                color:azure
-                }         
-                #calendar {
-                position: fixed;
-                bottom: 10px;
-                right: 750px;
-                box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(255, 255, 255, 0.22) 0px 15px 12px;                
-                }      
-            .calendar:hover{
-            background: #0000001f;
-            text-shadow: 1px 1px 2px rgb(255, 255, 255), 0 0 25px rgb(255, 255, 255), 0 0 5px rgb(255, 255, 255);
-            }
-            .calendar:
-        </style>
-</div>             
+<footer>
+  <style>
+  body {margin:0;}
+  
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(51, 51, 51);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  li {
+    float: left;
+  }
+  
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 0px 13px;
+    text-decoration: none;
+  }
+  
+  li a:hover:not(.active) {
+    background-color: rgb(17, 17, 17);
+  }
+  
+  .active {
+    background-color: #04AA6D;
+  }
+  </style>
+  
+  <ul>
+      <li><a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.main.html">
+          <img src="https://i.imgur.com/9OUrGoe.png" alt="Home" width="75" height="75"></li>
+      <li><a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.search.html">
+          <img src="https://i.imgur.com/Ut0bHnY.png" alt="Search" width="75" height="75"></li>
+      <li><a href="https://htmlpreview.github.io/?https://github.com/wolfeykevin/sdi-blended-project1-scaffold/blob/master/webpage.schedule.html">
+          <img src="https://i.imgur.com/LUIqspQ.png" alt="Schedules & Times" width="75" height="75"></li>
+  </ul>
+  </div>
+  </footer>
