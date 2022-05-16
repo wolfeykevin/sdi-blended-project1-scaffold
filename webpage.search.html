@@ -1,87 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>SDI Project 1: TV Shows & Synopses</title>
+  <head>
+    <title>SDI Project 1: TV Show Search</title>
     <style>
     body {
-      background-image: url('https://i.imgur.com/9KhjWvW.jpeg');
+        background-image: url('https://i.imgur.com/r4mNMPl.jpg');
     }
     </style>
     </head>
-</head>
+  </head>
+
+<script>
+
+    function onClick() {
+        let val = document.getElementById('input').value
+        let url = 'https://api.tvmaze.com/search/shows?q=' + val
+        
+        let element = document.querySelector('#shows')
+        if (element != null){
+          removeAllChildNodes(element)
+        }
+
+        getShows(url)
+            .then(next => {
+              const temp = makeGrid(next);
+              document.getElementById("content").appendChild(temp);
+            })
+            .catch((error) => {
+                 console.log(error)
+             })
+    }  
+  
+  async function getShows(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+            throw new Error("fetch did not work"); 
+    }
+    return await response.json();
+  }
+  
+  function makeGrid(shows) { //strech goal: make into grid box 
+    
+    let newarr = []
+    let container =  document.createElement("div")
+    container.id = "shows"
+
+    for (let x of shows){
+        newarr.push(x.show)
+    }
+    const elements = newarr.map(x => toHTMLElements(x)); 
+
+    for (element of elements){
+        container.appendChild(element)
+    }
+/*
+    var container = document.createElement("div");
+    container.id = "showsContainer";
+    container.className = "container";
+
+    for (i=0; i< (elements.length/3)+1; i+=1) {
+        var row = document.createElement("div");
+        row.className = "row";
+        row.id = "row" + i;
+      
+        for (k=0; k<3; k+=1) {
+            //create an element for each tv show and append it to the grid
+            //var show = document.createElement("div"); 
+            //show.innerHTML = elements
+            //box.className = "show";
+            if (i+k < elements.length){
+                row.appendChild(elements[i*k + k]);
+            }
+        };
+        container.appendChild(row);      
+    };*/
+    return container
+  }
+
+  function removeAllChildNodes(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+
+  function toHTMLElements(obj){
+        const container = document.createElement("div")
+        const division1 = document.createElement("div");
+        const division2 = document.createElement("div");
+        const images = document.createElement("img");
+        if (obj.image != null){
+          images.src = obj.image.medium;
+          images.style.border = "5px solid black"
+          images.style.borderRadius = "10px";
+          images.style.backgroundColor = 'rgba(0,0,0,0.7)';
+          images.style.marginLeft = '175px'}
+        else{
+          images.innerHTML = "No image Found"
+          images.src = "https://i.imgur.com/P47tX0R.png"
+        }
+
+        const title = document.createElement('div');
+        title.innerHTML = `<b>${obj.name}</b>`
+        title.style.color = 'white';
+        title.style.fontFamily = 'verdana'
+        title.style.backgroundColor = 'dimgray'
+        title.style.boxShadow = "3px 3px 3px black"
+        title.style.margin = '1em'
+        title.style.padding = '1em'
+        title.style.width = '25%'
+        title.style.textAlign = 'center'
+        title.style.fontSize = '25px'
+
+
+        const description = document.createElement('div')
+        description.innerHTML = `<b>Summary:</b></br>${obj.summary}`
+        description.style.color = 'white';
+        description.style.fontFamily = 'verdana'
+        description.style.backgroundColor = 'dimgray'
+        description.style.boxShadow = "3px 3px 3px black"
+        description.style.margin = '1em'
+        description.style.padding = '1em'
+        description.style.width = '25%'
+        description.style.display = "inline-block"
+
+
+        const details = document.createElement('div')
+        if (obj.network != null){
+          details.innerHTML = 
+          `<b><fontRating:</b>   ${obj.rating.average}</br>
+          <b>Runtime:</b>   ${obj.averageRuntime} min</br>
+          <b>Can be viewed on:</b> ${obj.network.name}</br>
+          <b>Official Site:</b> <a href = ${obj.officialSite}>${obj.name}</a></br>
+        `}
+        else{
+          details.innerHTML = 
+          `<b>Rating:</b>   ${obj.rating.average}</br>
+          <b>Runtime:</b>   ${obj.averageRuntime}</br>
+          <b>Can be viewed on:</b> ${obj.webChannel.name}</br>
+          <b>Official Site:</b> <a href = ${obj.officialSite}>${obj.name}</a></br>`
+        }
+
+        details.style.color = 'white';
+        details.style.fontFamily = 'verdana'
+        details.style.backgroundColor = 'dimgray'
+        details.style.boxShadow = "3px 3px 3px black"
+        details.style.margin = '1em'
+        details.style.padding = '1em'
+        details.style.width = '25%'
+        details.style.display = "inline-block"
+
+
+        container.appendChild(title);
+        container.appendChild(division1);
+        container.appendChild(images);
+        container.appendChild(division2);
+        container.appendChild(description);
+        container.appendChild(details)
+
+        return container
+  }
+
+
+</script>
+
+
 
 <div1>
-    <body> 
-        <h1 style="font-family:verdana;">Search:
-            <style>
-                div1 {text-align: center;}
-                h1 {color:white}
-                h1 {font-size: 325%;}
-                h1 {text-shadow: 1px 1px 2px black, 0 0 25px rgb(82, 63, 133), 0 0 5px darkblue;};
-                h1 {text-align: center;}
-                h1 {font-weight: bold;}
-            </style>
-        </h1>
-    </body>
+  <body> 
+      <h1 style="font-family:verdana;">Search:
+          <style>
+              div1 {text-align: center;}
+              h1 {color:white}
+              h1 {font-size: 325%;}
+              h1 {text-shadow: 1px 1px 2px black, 0 0 25px rgb(82, 63, 133), 0 0 5px darkblue;};
+              h1 {text-align: center;}
+              h1 {font-weight: bold;}
+              h1 {margin-top: 300px;}
+          </style>
+      </h1>
+  </body>
 </div1>
 
-<div class="wrap">
-   <div class="search">
-      <input type="text" class="searchTerm" placeholder="What show or actor/actress are you looking for?">
-      <button type="submit" class="searchButton">
-        <style>
-            @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+<div id="searchbar">
+  <style>
+    form {
+      width: 35%;
+      position: flex;
+      top: 15%;
+      left: 25%;
+      margin: auto;
+    }
+    input {
+      padding: 4px 10px;
+      border: 0;
+      font-size: 16px;
+    }
+    .search {
+      width: 75%;
+    }
+    .submit {
+      width: 70px;
+      background-color: #1c87c9;
+      color: #ffffff;
+    }
+  </style>
 
-            body{
-            font-family: 'Open Sans', sans-serif;
-            }
+<form>
+  <input type="text" name="text" id="input" class="search" placeholder="What shows are you looking for today?">
+  <button class ="submit" onclick= "onClick(); return false;">Submit</button>
+</form>
 
-            .search {
-            width: 100%;
-            position: relative;
-            display: flex;
-            }
-
-            .searchTerm {
-            width: 100%;
-            border: 3px solid #7123ee;
-            border-right: none;
-            padding: 5px;
-            height: 20px;
-            border-radius: 5px 0 0 5px;
-            outline: none;
-            color: #9DBFAF;
-            }
-
-            .searchTerm:focus{
-            color: #7123ee;
-            }
-
-            .searchButton {
-            width: 40px;
-            height: 36px;
-            border: 1px solid #7123ee;
-            background: #7123ee;
-            text-align: center;
-            color: rgb(0, 0, 0);
-            border-radius: 0 2px 2px 0;
-            cursor: pointer;
-            font-size: 20px;
-            }
-
-            .wrap{
-            width: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            }    
-        </style>
-        <i class="fa fa-search"></i>
-     </button>
-   </div>
+<div id="content">
+    <h2>Search Results:</h2>
+      <style>
+        h2 {color:white}
+        h2 {text-align: center;}
+        h2 {font-family:verdana;}
+        h2 {text-shadow: 1px 1px 2px black, 0 0 25px rgb(82, 63, 133), 0 0 5px darkblue;}
+        
+      </style>
 </div>
+
+
 
 <footer>
   <style>
@@ -90,11 +231,11 @@
   ul {
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: 0.2em;
     overflow: hidden;
-    background-color: rgb(51, 51, 51);
-    position:fixed;
-    bottom: 0;
+    background-color: rgb(51, 51, 51, 0.9);
+    position: fixed;
+    top: 0;
     width: 100%;
   }
   
